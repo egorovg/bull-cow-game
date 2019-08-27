@@ -18,6 +18,11 @@ public class MainController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
     @GetMapping("/")
     public String root(Model model) {
         gameService.generateNumber();
@@ -32,14 +37,9 @@ public class MainController {
         return gameService.addNumber(inputNumber, authentication);
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
     @PostMapping("/newGame")
     public String newGame(Authentication authentication, Model model) {
-        gameService.newGameInitializer(authentication);
+        gameService.newGameInitialize(authentication);
         model.addAttribute("results", gameService.results());
         model.addAttribute("numberValue", gameService.getNumber());
         return "index";

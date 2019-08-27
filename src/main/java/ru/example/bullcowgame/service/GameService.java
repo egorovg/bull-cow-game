@@ -24,6 +24,7 @@ public class GameService {
 
     @Autowired
     private UserService userService;
+
     private ArrayList<Integer> number;
 
     private ArrayList<Integer> getArrayDigits() {
@@ -38,9 +39,11 @@ public class GameService {
             s.add(r.nextInt(9));
         }
         number.addAll(s);
+        Collections.shuffle(number);
     }
 
     public String checkNumber(ArrayList<Integer> userNumber, User user) {
+        String result;
         user.setCountAttempt(user.getCountAttempt() + 1);
         int countBulls = 0;
         int countCows = 0;
@@ -54,12 +57,12 @@ public class GameService {
                 countBulls++;
                 countCows--;
             }
-            if (countBulls == 4) {
-                return countBulls + "B" + countCows + "C" + winGame;
-            }
         }
+        if (countBulls == 4) {
+            result = countBulls + "B" + countCows + "C" + winGame;
+        } else result = countBulls + "B" + countCows + "C";
         userService.save(user);
-        return countBulls + "B" + countCows + "C";
+        return result;
     }
 
     public ResponseEntity addNumber(String payload, Authentication authentication) throws JsonProcessingException {
@@ -105,7 +108,7 @@ public class GameService {
         return getArrayDigits().get(0).toString() + getArrayDigits().get(1).toString() + getArrayDigits().get(2).toString() + getArrayDigits().get(3).toString();
     }
 
-    public void newGameInitializer(Authentication authentication) {
+    public void newGameInitialize(Authentication authentication) {
         generateNumber();
         User user = userService.findByUsername(authentication.getName());
         user.setCountGames(user.getCountGames() + 1);
